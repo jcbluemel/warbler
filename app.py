@@ -252,7 +252,15 @@ def edit_profile():
             form.password.errors = ["Incorrect credentials"]
 
         else:
-            return "neeeeerd"
+            user.username = request.form["username"]
+            user.email = request.form["email"]
+            user.image_url = request.form["image_url"]
+            user.header_image_url = request.form["header_image_url"]
+            user.bio = request.form["bio"]
+
+            db.session.commit()
+
+            return redirect (f"/users/{user.id}")
 
 
 
