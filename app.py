@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import EditProfileForm, UserAddForm, LoginForm, MessageForm, CSRFOnlyForm
-from models import db, connect_db, User, Message
+from models import db, connect_db, User, Message, DEFAULT_IMAGE_URL, DEFAULT_HEADER_IMAGE_URL
 
 load_dotenv()
 
@@ -246,33 +246,27 @@ def edit_profile():
         user = User.authenticate(g.user.username, password)
 
         if not user:
-            #because brit told me to
+            # because brit told me to
             flash("Incorrect credentials", "danger")
-            #starter html had this edit.html
+            # starter html had this edit.html
             form.password.errors = ["Incorrect credentials"]
 
         else:
+
             user.username = request.form["username"]
             user.email = request.form["email"]
-            user.image_url = request.form["image_url"]
-            user.header_image_url = request.form["header_image_url"]
             user.bio = request.form["bio"]
+            # TODO: help us style!
+            user.image_url = request.form["image_url"] if request.form[
+                "image_url"] else DEFAULT_IMAGE_URL
+            user.header_image_url = request.form["header_image_url"] if request.form[
+                "header_image_url"] else DEFAULT_HEADER_IMAGE_URL
 
             db.session.commit()
 
-            return redirect (f"/users/{user.id}")
-
-
+            return redirect(f"/users/{user.id}")
 
     return render_template('/users/edit.html', form=form)
-
-    ### check that password is valid password for the user (authenticate)
-    ##### : if not, flash error and re-present the form with data
-    #####   entered still there
-
-    #### : should be able to edit all fields except password
-
-    #### : on success, redirect to user detail page
 
 
 @app.post('/users/delete')
