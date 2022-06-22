@@ -476,6 +476,12 @@ p.card-bio {
   padding: 12px;
 }
 
+#user_form textarea.form-control {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 12px;
+}
+
 /* =========================== Edit Page */
 
 .edit-btn-area {

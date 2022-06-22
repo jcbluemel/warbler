@@ -5,7 +5,7 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
-from forms import UserAddForm, LoginForm, MessageForm, CSRFOnlyForm
+from forms import EditProfileForm, UserAddForm, LoginForm, MessageForm, CSRFOnlyForm
 from models import db, connect_db, User, Message
 
 load_dotenv()
@@ -231,13 +231,32 @@ def stop_following(follow_id):
 
 
 @app.route('/users/profile', methods=["GET", "POST"])
-def profile():
+def edit_profile():
     """Update profile for current user."""
 
-    #######
-    ### ensure user is logged in (built in function)
-    ### show a form with the following: (render_template)(forms.py)
-    ##### : username, email, image_url, header_image_url, bio, password
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    form = EditProfileForm(obj=g.user)
+
+    if form.validate_on_submit():
+
+        password = request.form["password"]
+        user = User.authenticate(g.user.username, password)
+
+        if not user:
+            #because brit told me to
+            flash("Incorrect credentials", "danger")
+            #starter html had this edit.html
+            form.password.errors = ["Incorrect credentials"]
+
+        else:
+            return "neeeeerd"
+
+
+
+    return render_template('/users/edit.html', form=form)
 
     ### check that password is valid password for the user (authenticate)
     ##### : if not, flash error and re-present the form with data
