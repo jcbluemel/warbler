@@ -234,7 +234,18 @@ def stop_following(follow_id):
 def profile():
     """Update profile for current user."""
 
-    # IMPLEMENT THIS
+    #######
+    ### ensure user is logged in (built in function)
+    ### show a form with the following: (render_template)(forms.py)
+    ##### : username, email, image_url, header_image_url, bio, password
+
+    ### check that password is valid password for the user (authenticate)
+    ##### : if not, flash error and re-present the form with data
+    #####   entered still there
+
+    #### : should be able to edit all fields except password
+
+    #### : on success, redirect to user detail page
 
 
 @app.post('/users/delete')
