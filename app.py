@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import EditProfileForm, UserAddForm, LoginForm, MessageForm, CSRFOnlyForm
-from models import db, connect_db, User, Message, DEFAULT_IMAGE_URL, DEFAULT_HEADER_IMAGE_URL
+from models import db, connect_db, User, Message, Follows, DEFAULT_IMAGE_URL, DEFAULT_HEADER_IMAGE_URL
 
 load_dotenv()
 
@@ -354,12 +354,15 @@ def homepage():
     """Show homepage:
 
     - anon users: no messages
-    - logged in: 100 most recent messages of followed_users
+    - logged in: 100 most recent messages of followed_users and current user.
     """
 
     if g.user:
         messages = (Message
                     .query
+                    .filter(
+                        (Message.user_id.in_([f.id for f in g.user.following]))
+                        | (Message.user_id == g.user.id))
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
