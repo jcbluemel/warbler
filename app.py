@@ -130,6 +130,7 @@ def logout():
     if form.validate_on_submit():
         do_logout()
 
+    #flash a message on success
     return redirect('/')
 
 
@@ -245,29 +246,46 @@ def edit_profile():
         password = request.form["password"]
         user = User.authenticate(g.user.username, password)
 
-        if not user:
-            # because brit told me to
-            flash("Incorrect credentials", "danger")
-            # starter html had this edit.html
-            form.password.errors = ["Incorrect credentials"]
 
-        else:
-
+        if user:
             user.username = request.form["username"]
             user.email = request.form["email"]
             user.bio = request.form["bio"]
             # TODO: help us style!
             user.image_url = request.form["image_url"] if request.form[
                 "image_url"] else DEFAULT_IMAGE_URL
-            user.header_image_url = request.form["header_image_url"] if request.form[
-                "header_image_url"] else DEFAULT_HEADER_IMAGE_URL
+            user.header_image_url = request.form["header_image_url"] or DEFAULT_HEADER_IMAGE_URL
 
             db.session.commit()
 
             return redirect(f"/users/{user.id}")
 
-    return render_template('/users/edit.html', form=form)
+        # because brit told me to
+        flash("Incorrect credentials", "danger")
+        # starter html had this edit.html
+        form.password.errors = ["Incorrect credentials"]
 
+
+    return render_template('/users/edit.html', form=form)
+# if not user:
+#             # because brit told me to
+#             flash("Incorrect credentials", "danger")
+#             # starter html had this edit.html
+#             form.password.errors = ["Incorrect credentials"]
+
+#         else:
+
+#             user.username = request.form["username"]
+#             user.email = request.form["email"]
+#             user.bio = request.form["bio"]
+#             # TODO: help us style!
+#             user.image_url = request.form["image_url"] if request.form[
+#                 "image_url"] else DEFAULT_IMAGE_URL
+#             user.header_image_url = request.form["header_image_url"] or DEFAULT_HEADER_IMAGE_URL
+
+#             db.session.commit()
+
+#             return redirect(f"/users/{user.id}")
 
 @app.post('/users/delete')
 def delete_user():
@@ -358,11 +376,10 @@ def homepage():
     """
 
     if g.user:
+        ids = [f.id for f in g.user.following]+[g.user.id]
         messages = (Message
                     .query
-                    .filter(
-                        (Message.user_id.in_([f.id for f in g.user.following]))
-                        | (Message.user_id == g.user.id))
+                    .filter(Message.user_id.in_(ids))
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
