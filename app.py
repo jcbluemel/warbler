@@ -357,7 +357,7 @@ def delete_message(message_id):
 
 @app.post('/likes/add/<int:message_id>')
 def add_like(message_id):
-    """this route processes action of clicking button to 'like'"""
+    """this route processes action of clicking button to *like*"""
     ## add condition to check if user is liking their own message
     if not g.user:
         flash("Access unauthorized.", "danger")
@@ -373,6 +373,22 @@ def add_like(message_id):
     db.session.commit()
 
     return redirect('/')
+
+@app.post('/likes/remove/<int:message_id>')
+def remove_like(message_id):
+    """this route processes action of clicking button to *dislike*"""
+    # breakpoint()
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    message_to_remove = Message.query.get_or_404(message_id)
+
+    g.user.liked_messages.remove(message_to_remove)
+    db.session.commit()
+
+    return redirect('/')
+
 
 
 ##############################################################################

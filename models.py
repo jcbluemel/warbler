@@ -85,6 +85,7 @@ class User(db.Model):
         backref="following",
     )
 
+    #list of all messages i've liked
     liked_messages = db.relationship(
         'Message',
         secondary="likes",
@@ -154,7 +155,11 @@ class User(db.Model):
     #         user_that_liked_id=self.id,
     #         message_that_was_liked_id=message_id)
 
-
+    def check_if_liked(self, current_message):
+        """check if message_id has been liked"""
+        message_liked_list = [
+            message for message in self.liked_messages if message == current_message]
+        return len(message_liked_list) == 1
 
     def remove_like(self, message_id):
         """create instance of user message without a like"""
