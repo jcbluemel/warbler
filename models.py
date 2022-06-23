@@ -88,7 +88,7 @@ class User(db.Model):
     liked_messages = db.relationship(
         'Message',
         secondary="likes",
-        backref="user"
+        backref="users"
     )
 
     def __repr__(self):
@@ -148,11 +148,11 @@ class User(db.Model):
             user for user in self.following if user == other_user]
         return len(found_user_list) == 1
 
-    def add_like():
-        """A"""
+    def add_like(self, message):
+        """create instance of a like"""
 
-    def remove_like():
-        """B"""
+    def remove_like(self, message):
+        """create instance of user message without a like"""
 
 class Message(db.Model):
     """An individual message ("warble")."""
@@ -185,7 +185,7 @@ class Message(db.Model):
 class Like(db.Model):
     """An individual like ("on a warble")."""
 
-    _tablename__ = 'likes'
+    __tablename__ = 'likes'
 
     user_that_liked_id = db.Column(
         db.Integer,

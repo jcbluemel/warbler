@@ -355,9 +355,14 @@ def delete_message(message_id):
 ##############################################################################
 # Like routes:
 
+@app.post('/')
+def add_like():
+    """this route processes action of clicking button to 'like'"""
+    ## add condition to check if user is liking their own message
 
+    message = message.id
 
-
+    return redirect ('/')
 
 
 ##############################################################################
