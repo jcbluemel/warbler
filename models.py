@@ -85,6 +85,12 @@ class User(db.Model):
         backref="following",
     )
 
+    liked_messages = db.relationship(
+        'Message',
+        secondary="likes",
+        backref="user"
+    )
+
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
@@ -142,6 +148,11 @@ class User(db.Model):
             user for user in self.following if user == other_user]
         return len(found_user_list) == 1
 
+    def add_like():
+        """A"""
+
+    def remove_like():
+        """B"""
 
 class Message(db.Model):
     """An individual message ("warble")."""
@@ -169,6 +180,33 @@ class Message(db.Model):
         db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False,
     )
+
+
+class Like(db.Model):
+    """An individual like ("on a warble")."""
+
+    _tablename__ = 'likes'
+
+    user_that_liked_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable=False,
+        primary_key=True
+    )
+
+    message_that_was_liked_id = db.Column(
+        db.Integer,
+        db.ForeignKey('messages.id', ondelete='CASCADE'),
+        nullable=False,
+        primary_key=True
+    )
+
+    timestamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow,
+    )
+
 
 
 def connect_db(app):

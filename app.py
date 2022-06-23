@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import EditProfileForm, UserAddForm, LoginForm, MessageForm, CSRFOnlyForm
-from models import db, connect_db, User, Message, Follows, DEFAULT_IMAGE_URL, DEFAULT_HEADER_IMAGE_URL
+from models import db, connect_db, User, Message, DEFAULT_IMAGE_URL, DEFAULT_HEADER_IMAGE_URL
 
 load_dotenv()
 
@@ -130,7 +130,7 @@ def logout():
     if form.validate_on_submit():
         do_logout()
 
-    #flash a message on success
+    # flash a message on success
     return redirect('/')
 
 
@@ -246,15 +246,14 @@ def edit_profile():
         password = request.form["password"]
         user = User.authenticate(g.user.username, password)
 
-
         if user:
             user.username = request.form["username"]
             user.email = request.form["email"]
             user.bio = request.form["bio"]
-            # TODO: help us style!
-            user.image_url = request.form["image_url"] if request.form[
-                "image_url"] else DEFAULT_IMAGE_URL
-            user.header_image_url = request.form["header_image_url"] or DEFAULT_HEADER_IMAGE_URL
+            user.image_url = request.form[
+                "image_url"] or DEFAULT_IMAGE_URL
+            user.header_image_url = request.form[
+                "header_image_url"] or DEFAULT_HEADER_IMAGE_URL
 
             db.session.commit()
 
@@ -265,27 +264,9 @@ def edit_profile():
         # starter html had this edit.html
         form.password.errors = ["Incorrect credentials"]
 
-
     return render_template('/users/edit.html', form=form)
-# if not user:
-#             # because brit told me to
-#             flash("Incorrect credentials", "danger")
-#             # starter html had this edit.html
-#             form.password.errors = ["Incorrect credentials"]
 
-#         else:
 
-#             user.username = request.form["username"]
-#             user.email = request.form["email"]
-#             user.bio = request.form["bio"]
-#             # TODO: help us style!
-#             user.image_url = request.form["image_url"] if request.form[
-#                 "image_url"] else DEFAULT_IMAGE_URL
-#             user.header_image_url = request.form["header_image_url"] or DEFAULT_HEADER_IMAGE_URL
-
-#             db.session.commit()
-
-#             return redirect(f"/users/{user.id}")
 
 @app.post('/users/delete')
 def delete_user():
@@ -363,6 +344,22 @@ def delete_message(message_id):
     return redirect(f"/users/{g.user.id}")
 
 
+
+'''form goes here
+    figure out what the current user and message are
+    Like.add_like(current user, message)
+    that will add them to the db
+    redirect back to that same page'''
+
+
+##############################################################################
+# Like routes:
+
+
+
+
+
+
 ##############################################################################
 # Homepage and error pages
 
@@ -376,7 +373,7 @@ def homepage():
     """
 
     if g.user:
-        ids = [f.id for f in g.user.following]+[g.user.id]
+        ids = [f.id for f in g.user.following] + [g.user.id]
         messages = (Message
                     .query
                     .filter(Message.user_id.in_(ids))
