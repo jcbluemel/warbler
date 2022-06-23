@@ -148,10 +148,15 @@ class User(db.Model):
             user for user in self.following if user == other_user]
         return len(found_user_list) == 1
 
-    def add_like(self, message):
-        """create instance of a like"""
+    # def add_like(self, message_id):
+    #     """Add a like """
+    #    like = Like(
+    #         user_that_liked_id=self.id,
+    #         message_that_was_liked_id=message_id)
 
-    def remove_like(self, message):
+
+
+    def remove_like(self, message_id):
         """create instance of user message without a like"""
 
 class Message(db.Model):

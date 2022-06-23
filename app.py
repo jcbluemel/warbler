@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import EditProfileForm, UserAddForm, LoginForm, MessageForm, CSRFOnlyForm
-from models import db, connect_db, User, Message, DEFAULT_IMAGE_URL, DEFAULT_HEADER_IMAGE_URL
+from models import db, connect_db, User, Message, Like, DEFAULT_IMAGE_URL, DEFAULT_HEADER_IMAGE_URL
 
 load_dotenv()
 
@@ -355,14 +355,24 @@ def delete_message(message_id):
 ##############################################################################
 # Like routes:
 
-@app.post('/')
-def add_like():
+@app.post('/likes/add/<int:message_id>')
+def add_like(message_id):
     """this route processes action of clicking button to 'like'"""
     ## add condition to check if user is liking their own message
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
 
-    message = message.id
+    # g.user.add_like(message_id)
 
-    return redirect ('/')
+    like = Like(
+        user_that_liked_id=g.user.id,
+        message_that_was_liked_id=message_id)
+
+    db.session.add(like)
+    db.session.commit()
+
+    return redirect('/')
 
 
 ##############################################################################

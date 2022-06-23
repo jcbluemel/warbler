@@ -273,6 +273,10 @@ nav + .container {
   z-index: 1;
 }
 
+#messages .like {
+  z-index: 2;
+}
+
 #messages .list-group-item a:not(.message-link) {
   position: relative;
   z-index: 2;
