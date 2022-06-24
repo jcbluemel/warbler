@@ -195,6 +195,18 @@ def show_followers(user_id):
     return render_template('users/followers.html', user=user)
 
 
+@app.get('/users/<int:user_id>/likes')
+def show_likes(user_id):
+    """Show list of followers of this user."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    user = User.query.get_or_404(user_id)
+    return render_template('users/likes.html', user=user)
+
+
 @app.post('/users/follow/<int:follow_id>')
 def start_following(follow_id):
     """Add a follow for the currently-logged-in user.
@@ -265,7 +277,6 @@ def edit_profile():
         form.password.errors = ["Incorrect credentials"]
 
     return render_template('/users/edit.html', form=form)
-
 
 
 @app.post('/users/delete')
@@ -344,7 +355,6 @@ def delete_message(message_id):
     return redirect(f"/users/{g.user.id}")
 
 
-
 '''form goes here
     figure out what the current user and message are
     Like.add_like(current user, message)
@@ -357,13 +367,12 @@ def delete_message(message_id):
 
 @app.post('/likes/add/<int:message_id>')
 def add_like(message_id):
-    """this route processes action of clicking button to *like*"""
-    ## add condition to check if user is liking their own message
+    """Add message to liked_messages for current user.
+    Redirect to home page."""
+
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
-
-    # g.user.add_like(message_id)
 
     like = Like(
         user_that_liked_id=g.user.id,
@@ -374,21 +383,22 @@ def add_like(message_id):
 
     return redirect('/')
 
+
 @app.post('/likes/remove/<int:message_id>')
 def remove_like(message_id):
-    """this route processes action of clicking button to *dislike*"""
-    # breakpoint()
+    """Remove message from current user's liked_messages.
+    Redirect to home page."""
+
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    message_to_remove = Message.query.get_or_404(message_id)
+    message = Message.query.get_or_404(message_id)
 
-    g.user.liked_messages.remove(message_to_remove)
+    g.user.liked_messages.remove(message)
     db.session.commit()
 
     return redirect('/')
-
 
 
 ##############################################################################

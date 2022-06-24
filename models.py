@@ -85,7 +85,7 @@ class User(db.Model):
         backref="following",
     )
 
-    #list of all messages i've liked
+    # list of all messages user has liked
     liked_messages = db.relationship(
         'Message',
         secondary="likes",
@@ -149,20 +149,12 @@ class User(db.Model):
             user for user in self.following if user == other_user]
         return len(found_user_list) == 1
 
-    # def add_like(self, message_id):
-    #     """Add a like """
-    #    like = Like(
-    #         user_that_liked_id=self.id,
-    #         message_that_was_liked_id=message_id)
-
     def check_if_liked(self, current_message):
         """check if message_id has been liked"""
         message_liked_list = [
             message for message in self.liked_messages if message == current_message]
         return len(message_liked_list) == 1
 
-    def remove_like(self, message_id):
-        """create instance of user message without a like"""
 
 class Message(db.Model):
     """An individual message ("warble")."""
@@ -216,7 +208,6 @@ class Like(db.Model):
         nullable=False,
         default=datetime.utcnow,
     )
-
 
 
 def connect_db(app):
