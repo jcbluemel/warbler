@@ -58,7 +58,7 @@ class UserModelTestCase(TestCase):
         self.assertEqual(u1.image_url, DEFAULT_IMAGE_URL)
 
     def test_user_repr(self):
-        """Test that User repr is returning correct details."""
+        """Test repr."""
 
         u1 = User.query.get(self.u1_id)
         repr = u1.__repr__()
@@ -66,8 +66,7 @@ class UserModelTestCase(TestCase):
         self.assertEqual(repr, f"<User #{u1.id}: {u1.username}, {u1.email}>")
 
     def test_is_following_true(self):
-        """Test if is_following correctly returns true
-        when user1 added to user2's followers."""
+        """Test is_following() returns True on success."""
 
         u1 = User.query.get(self.u1_id)
         u2 = User.query.get(self.u2_id)
@@ -78,8 +77,7 @@ class UserModelTestCase(TestCase):
         self.assertTrue(u1.is_following(u2))
 
     def test_is_following_false(self):
-        """Test if is_following correctly returns false
-        when neither user follows the other"""
+        """Test is_following() returns False on failure."""
 
         u1 = User.query.get(self.u1_id)
         u2 = User.query.get(self.u2_id)
@@ -88,8 +86,7 @@ class UserModelTestCase(TestCase):
         self.assertFalse(u2.is_following(u1))
 
     def test_is_followed_true(self):
-        """Test if is_followed_by returns true
-        when u2 is a follower of u1"""
+        """Test is_followed_by() returns True on success."""
 
         u1 = User.query.get(self.u1_id)
         u2 = User.query.get(self.u2_id)
@@ -99,8 +96,7 @@ class UserModelTestCase(TestCase):
         self.assertTrue(u1.is_followed_by(u2))
 
     def test_is_followed_by_false(self):
-        """Test if is_followed_by returns false
-        for users not following each other"""
+        """Test is_followed_by() returns False on failure."""
 
         u1 = User.query.get(self.u1_id)
         u2 = User.query.get(self.u2_id)
@@ -109,7 +105,7 @@ class UserModelTestCase(TestCase):
         self.assertFalse(u2.is_followed_by(u1))
 
     def test_signup_valid_creds(self):
-        """Test if user with valid credentials is created"""
+        """Test User.signup() success."""
 
         u3 = User.signup("u3", "u3@email.com", "password", None)
         db.session.commit()
@@ -126,7 +122,6 @@ class UserModelTestCase(TestCase):
 
         with self.assertRaises(exc.IntegrityError):
             db.session.commit()
-
 
     # TODO: def test_authenticate_valid_creds(self):
 
