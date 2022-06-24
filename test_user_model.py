@@ -108,9 +108,19 @@ class UserModelTestCase(TestCase):
         self.assertFalse(u1.is_followed_by(u2))
         self.assertFalse(u2.is_followed_by(u1))
 
-    #def test_signup_valid_creds(self):
+    def test_signup_valid_creds(self):
+        """Test if user with valid credentials is created"""
 
-    # TODO: def test_signup_invalid_creds(self):
+        u3 = User.signup("u3", "u3@email.com", "password", None)
+
+        self.assertIsInstance(u3, User)
+        #TODO: see about checking for u3 in db
+
+    def test_signup_invalid_creds(self):
+        """Test if user with invalid credentials isn't created"""
+
+        u4 = User.signup("u4", "bad-email", "password", None)
+        self.assertNotIsInstance(u4, User)
 
     # TODO: def test_authenticate_valid_creds(self):
 
