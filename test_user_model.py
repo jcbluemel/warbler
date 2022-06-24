@@ -5,7 +5,7 @@
 #    python -m unittest test_user_model.py
 
 
-from app import app
+from sqlalchemy import exc
 import os
 from unittest import TestCase
 
@@ -19,7 +19,7 @@ from models import db, User, Message, Follows, DEFAULT_IMAGE_URL
 os.environ['DATABASE_URL'] = "postgresql:///warbler_test"
 
 # Now we can import app
-
+from app import app
 
 # Create our tables (we do this here, so we only create the tables
 # once for all tests --- in each test, we'll delete the data
@@ -112,15 +112,21 @@ class UserModelTestCase(TestCase):
         """Test if user with valid credentials is created"""
 
         u3 = User.signup("u3", "u3@email.com", "password", None)
+        db.session.commit()
+
+        current_user = User.query.get(u3.id)
 
         self.assertIsInstance(u3, User)
-        #TODO: see about checking for u3 in db
+        self.assertEqual(u3, current_user)
 
     def test_signup_invalid_creds(self):
-        """Test if user with invalid credentials isn't created"""
+        """Test User.signup() failure."""
 
-        u4 = User.signup("u4", "bad-email", "password", None)
-        self.assertNotIsInstance(u4, User)
+        u4 = User.signup(None, "hi@mail.com", "password", None)
+
+        with self.assertRaises(exc.IntegrityError):
+            db.session.commit()
+
 
     # TODO: def test_authenticate_valid_creds(self):
 
