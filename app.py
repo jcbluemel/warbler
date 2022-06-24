@@ -271,9 +271,6 @@ def edit_profile():
 
             return redirect(f"/users/{user.id}")
 
-        # because brit told me to
-        flash("Incorrect credentials", "danger")
-        # starter html had this edit.html
         form.password.errors = ["Incorrect credentials"]
 
     return render_template('/users/edit.html', form=form)
@@ -364,24 +361,19 @@ def delete_message(message_id):
 
 ##############################################################################
 # Like routes:
-## form validate on submit
-## todo: add csrf protection ##
-## change docstrings ... post referrer add
 
 @app.post('/likes/add/<int:message_id>')
 def add_like(message_id):
     """Add message to liked_messages for current user.
-    Redirect to home page."""
+    Redirect to previous page."""
 
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    like = Like(
-        user_that_liked_id=g.user.id,
-        message_that_was_liked_id=message_id)
+    message = Message.query.get_or_404(message_id)
 
-    db.session.add(like)
+    g.user.liked_messages.append(message)
     db.session.commit()
 
     return redirect(request.referrer)
@@ -390,7 +382,7 @@ def add_like(message_id):
 @app.post('/likes/remove/<int:message_id>')
 def remove_like(message_id):
     """Remove message from current user's liked_messages.
-    Redirect to home page."""
+    Redirect to previous page."""
 
     if not g.user:
         flash("Access unauthorized.", "danger")
@@ -416,6 +408,8 @@ def homepage():
     - logged in: 100 most recent messages of followed_users and current user.
     """
 
+    form = g.csrf_form
+
     if g.user:
         ids = [f.id for f in g.user.following] + [g.user.id]
         messages = (Message
@@ -425,7 +419,7 @@ def homepage():
                     .limit(100)
                     .all())
 
-        return render_template('home.html', messages=messages)
+        return render_template('home.html', messages=messages, form=form)
 
     else:
         return render_template('home-anon.html')
