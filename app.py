@@ -364,6 +364,9 @@ def delete_message(message_id):
 
 ##############################################################################
 # Like routes:
+## form validate on submit
+## todo: add csrf protection ##
+## change docstrings ... post referrer add
 
 @app.post('/likes/add/<int:message_id>')
 def add_like(message_id):

@@ -86,6 +86,8 @@ class User(db.Model):
     )
 
     # list of all messages user has liked
+    # relationship between messages.users? ... rename: backref
+    # backref doesn't have to reference table name
     liked_messages = db.relationship(
         'Message',
         secondary="likes",
