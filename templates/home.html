@@ -63,14 +63,14 @@
                   <form method="POST" action="/likes/remove/{{ msg.id }}">
                     {{ g.csrf_form.hidden_tag() }}
                     <button class="btn btn-outline-primary">
-                      <i class="fa-solid fa-thumbs-up"></i>
+                      <i class="fas fa-thumbs-up"></i>
                     </button>
                   </form>
                 {% else %}
                   <form method="POST" action="/likes/add/{{ msg.id }}">
                     {{ g.csrf_form.hidden_tag() }}
                     <button class="btn btn-primary">
-                      <i class="fa-regular fa-thumbs-up"></i>
+                      <i class="far fa-thumbs-up"></i>
                     </button>
                   </form>
                 {% endif %}
