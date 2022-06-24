@@ -41,6 +41,16 @@ body.error-404 {
   color: #1c94e0;
 }
 
+.navbar button {
+  color: #66757f;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.navbar button:hover {
+  color: #1c94e0;
+}
+
 .navbar-brand {
   display: flex;
   align-items: center;
@@ -202,11 +212,6 @@ nav + .container {
   opacity: 0.7;
   background-size: cover;
   background-position: top center;
-}
-
-#warbler-hero img {
-  height: 360px;
-  width: 100vw;
 }
 
 .full-width {

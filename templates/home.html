@@ -44,37 +44,40 @@
 
   <div class="col-lg-6 col-md-8 col-sm-12">
     <ul class="list-group" id="messages">
+
       {% for msg in messages %}
-      <li class="list-group-item">
-        <a href="/messages/{{ msg.id }}" class="message-link">
-          <a href="/users/{{ msg.user.id }}">
-            <img src="{{ msg.user.image_url }}" alt="" class="timeline-image">
-          </a>
-          <div class="message-area">
-            <a href="/users/{{ msg.user.id }}">@{{ msg.user.username }}</a>
-            <span class="text-muted">{{ msg.timestamp.strftime('%d %B %Y') }}</span>
-            <p>{{ msg.text }}</p>
-          </div>
-          {% if msg.user_id != g.user.id %}
-            <div class="like">
-              {% if g.user.check_if_liked(msg) %}
-                <form method="POST" action="/likes/remove/{{ msg.id }}">
-                  {{ g.csrf_form.hidden_tag() }}
-                  <button class="btn btn-outline-primary">
-                    <i class="fa-solid fa-thumbs-up"></i>
-                  </button>
-                </form>
-              {% else %}
-                <form method="POST" action="/likes/add/{{ msg.id }}">
-                  {{ g.csrf_form.hidden_tag() }}
-                  <button class="btn btn-primary">
-                    <i class="fa-regular fa-thumbs-up"></i>
-                  </button>
-                </form>
-              {% endif %}
+        <li class="list-group-item">
+          <a href="/messages/{{ msg.id }}" class="message-link">
+            <a href="/users/{{ msg.user.id }}">
+              <img src="{{ msg.user.image_url }}" alt="" class="timeline-image">
+            </a>
+            <div class="message-area">
+              <a href="/users/{{ msg.user.id }}">@{{ msg.user.username }}</a>
+              <span class="text-muted">{{ msg.timestamp.strftime('%d %B %Y') }}</span>
+              <p>{{ msg.text }}</p>
             </div>
-          {% endif %}
-      </li>
+
+            {% if msg.user_id != g.user.id %}
+              <div class="like">
+                {% if g.user.check_if_liked(msg) %}
+                  <form method="POST" action="/likes/remove/{{ msg.id }}">
+                    {{ g.csrf_form.hidden_tag() }}
+                    <button class="btn btn-outline-primary">
+                      <i class="fa-solid fa-thumbs-up"></i>
+                    </button>
+                  </form>
+                {% else %}
+                  <form method="POST" action="/likes/add/{{ msg.id }}">
+                    {{ g.csrf_form.hidden_tag() }}
+                    <button class="btn btn-primary">
+                      <i class="fa-regular fa-thumbs-up"></i>
+                    </button>
+                  </form>
+                {% endif %}
+              </div>
+            {% endif %}
+
+        </li>
       {% endfor %}
     </ul>
   </div>

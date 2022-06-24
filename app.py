@@ -130,7 +130,7 @@ def logout():
     if form.validate_on_submit():
         do_logout()
 
-    # flash a message on success
+    flash("Successfully logged out!")
     return redirect('/')
 
 
@@ -381,7 +381,7 @@ def add_like(message_id):
     db.session.add(like)
     db.session.commit()
 
-    return redirect('/')
+    return redirect(request.referrer)
 
 
 @app.post('/likes/remove/<int:message_id>')
@@ -398,7 +398,7 @@ def remove_like(message_id):
     g.user.liked_messages.remove(message)
     db.session.commit()
 
-    return redirect('/')
+    return redirect(request.referrer)
 
 
 ##############################################################################
