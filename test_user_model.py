@@ -65,7 +65,7 @@ class UserModelTestCase(TestCase):
 
         self.assertEqual(repr, f"<User #{u1.id}: {u1.username}, {u1.email}>")
 
-    def test_is_following_true_success(self):
+    def test_is_following_true(self):
         """Test if is_following correctly returns true
         when user1 added to user2's followers."""
 
@@ -77,7 +77,7 @@ class UserModelTestCase(TestCase):
 
         self.assertTrue(u1.is_following(u2))
 
-    def test_is_following_false_success(self):
+    def test_is_following_false(self):
         """Test if is_following correctly returns false
         when neither user follows the other"""
 
@@ -87,11 +87,28 @@ class UserModelTestCase(TestCase):
         self.assertFalse(u1.is_following(u2))
         self.assertFalse(u2.is_following(u1))
 
-    # TODO: def test_is_followed_true_success(self):
+    def test_is_followed_true(self):
+        """Test if is_followed_by returns true
+        when u2 is a follower of u1"""
 
-    # TODO: def test_is_followed_false_success(self):
+        u1 = User.query.get(self.u1_id)
+        u2 = User.query.get(self.u2_id)
 
-    # TODO: def test_signup_valid_creds(self):
+        u1.followers.append(u2)
+        db.session.commit()
+        self.assertTrue(u1.is_followed_by(u2))
+
+    def test_is_followed_by_false(self):
+        """Test if is_followed_by returns false
+        for users not following each other"""
+
+        u1 = User.query.get(self.u1_id)
+        u2 = User.query.get(self.u2_id)
+
+        self.assertFalse(u1.is_followed_by(u2))
+        self.assertFalse(u2.is_followed_by(u1))
+
+    #def test_signup_valid_creds(self):
 
     # TODO: def test_signup_invalid_creds(self):
 
