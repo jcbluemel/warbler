@@ -65,4 +65,4 @@ class MessageAddViewTestCase(MessageBaseViewTestCase):
 
             self.assertEqual(resp.status_code, 302)
 
-            Message.query.filter_by(text="Hello").one()
+            msg = Message.query.filter_by(text="Hello").one()
